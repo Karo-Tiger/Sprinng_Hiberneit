@@ -7,9 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,9 +22,6 @@ public class UserServiceImp implements UserService  {
       userDao.add(user);
    }
 
-   @PersistenceContext
-   private EntityManager entityManager;
-
    @Transactional(readOnly = true)
    @Override
    public List<User> listUsers() {
@@ -42,12 +36,8 @@ public class UserServiceImp implements UserService  {
 
    @Transactional(readOnly = true)
    @Override
-   public Optional<User> findUserByCarModelAndSeries(String model, int series) {
-      TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u JOIN u.car c WHERE c.model = :model AND c.series = :series", User.class);
-      query.setParameter("model",model);
-      query.setParameter("series",series);
-
-      return query.getResultStream().findAny();
+   public Optional<User> findUserByCarModelAndSeries(String model, int series){
+      return userDao.findUserByCarModelAndSeries(model, series);
    }
 
 }
